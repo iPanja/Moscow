@@ -41,8 +41,8 @@ public class Server{
 	
 	
 	public Color getStatusColor() {
-		if(serverStatus() == ServerStatus.Online) return Color.GREEN;
+		if(serverStatus() == ServerStatus.Online) return Color.LIMEGREEN;
 		else if(serverStatus() == ServerStatus.Running) return Color.YELLOW;
-		return Color.RED;
+		return Color.LIMEGREEN;
 	}
 }
