@@ -4,7 +4,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/iPanja/Moscow">
-    <img src="Ushanka.png" alt="Logo" width="80" height="80">
+    <img src="ushanka.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Moscow</h3>
