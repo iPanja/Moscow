@@ -1,6 +1,8 @@
 package main;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javafx.scene.paint.Color;
 
@@ -8,15 +10,17 @@ public class Server{
 	public String name;
 	public String ip;
 	public int port;
-	private Boolean isRunning;
-	private Process process;  //Move to thread class
-	private Thread thread;
+	
+	private STP stp;
 	
 	public Server(String name, String ip, int port) {
 		this.name = name;
 		this.ip = ip;
 		this.port = port;
-		this.isRunning = false;
+		//Setup thread
+		stp = new STP(name, ip, port);
+		stp.start();
+		
 		Main._UIController.addServer(this);
 	}
 	
@@ -25,28 +29,20 @@ public class Server{
 	
 	//https://stackoverflow.com/questions/8496494/running-command-line-in-java
 	public void launch() { //Launches a server instance
-		if(this.isRunning) return;
-		
-		Runtime runtime = Runtime.getRuntime();
-		try {
-			this.process = runtime.exec("java -jar server.jar " + name + " " + ip + " " + port);
-			this.isRunning = true;
-		} catch (IOException e) {
-			System.out.print("Failed to start server: " + this.name + " on " + ip + ":" + port);
-			this.isRunning = false;
-			e.printStackTrace();
-		}
+		this.stp.launch();
+		Main._UIController.refreshServers();
 	} 
 	public void close() {
-		this.process.destroy(); //Forcibly closes server
+		this.stp.close(); //Forcibly closes server
 	}
 	
 	public int getPlayerCount() {return 0;} //Gets amount of players in lobby
-	public Boolean isRunning() {return false;} //Gets status of server
+	public ServerStatus serverStatus() { return stp.getServerStatus(); }
+	
 	
 	public Color getStatusColor() {
-		if(!this.isRunning) return Color.RED;
-		return Color.GREEN;
+		if(serverStatus() == ServerStatus.Online) return Color.GREEN;
+		else if(serverStatus() == ServerStatus.Running) return Color.YELLOW;
+		return Color.RED;
 	}
-
 }

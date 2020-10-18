@@ -27,8 +27,8 @@ public class UIController {
 	public void initialize() {
 		//Do whatever
 		this.servers = new ArrayList<Server>();
-		for(int i = 1; i <= 5; i++) {
-			Server temp = new Server("Server " + i, "localhost", 8080+i);
+		for(int i = 0; i <= 4; i++) {
+			Server temp = new Server("Server " + i, "localhost", 1987+i);
 			servers.add(temp);
 		}
 	}
