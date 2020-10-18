@@ -38,11 +38,11 @@ public class Server{
 	
 	public int getPlayerCount() {return 0;} //Gets amount of players in lobby
 	public ServerStatus serverStatus() { return stp.getServerStatus(); }
-	
+	public String getError() { return stp.getError(); }
 	
 	public Color getStatusColor() {
 		if(serverStatus() == ServerStatus.Online) return Color.LIMEGREEN;
 		else if(serverStatus() == ServerStatus.Running) return Color.YELLOW;
-		return Color.LIMEGREEN;
+		return Color.RED;
 	}
 }

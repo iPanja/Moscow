@@ -2,6 +2,8 @@ package main;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,8 +15,11 @@ import javafx.stage.Stage;
 public class Main extends Application{
 	//Config
 	public static String IP;
-	public static int min_port;
-	public static int max_port;
+	public static int min_port = 1987;
+	public static int max_port = 2000;
+	public static int max_servers = 1;
+	public static String SELoc = "E:\\Fletcher\\Downloads\\winserver";
+	public static String SEName = "\\fnafmoba.exe";
 	
 	public static UIController _UIController = new UIController();
 	
@@ -39,5 +44,30 @@ public class Main extends Application{
 			e.printStackTrace();
 		}
 		primaryStage.show();
+		
+		startUpdateDaemonTask(this._UIController::refreshUI);
+	}
+	
+	//https://stackoverflow.com/questions/44239194/javafx-updating-ui-from-a-thread-java-8
+	public void startUpdateDaemonTask(Runnable runner) {
+		Task task = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception{
+				while(true) {
+					Platform.runLater(runner);
+					Thread.sleep(1000);
+				}
+			}
+		};
+		Thread thread = new Thread(task);
+		thread.setDaemon(true);
+		thread.start();
+	}
+	
+	@Override
+	public void stop() {
+		for(Server s : Main._UIController.servers){
+			s.close();
+		}
 	}
 }
