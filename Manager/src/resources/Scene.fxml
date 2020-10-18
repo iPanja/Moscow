@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <MenuBar VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Set Config File" />
+            <MenuItem mnemonicParsing="false" text="Set API Address" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" text="Preferences…" />
+            <MenuItem mnemonicParsing="false" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Edit">
+          <items>
+            <MenuItem mnemonicParsing="false" text="Start New Server" />
+            <MenuItem mnemonicParsing="false" text="Restart All" />
+            <SeparatorMenuItem mnemonicParsing="false" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" text="About" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="14.0" layoutY="57.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="15.0" AnchorPane.topAnchor="57.0">
+               <content>
+                  <VBox fx:id="serversBox" prefHeight="303.0" prefWidth="610.0" spacing="10.0">
+                     <children>
+						 <!--
+                        <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="75.0" prefWidth="610.0" style="-fx-background-color: #333;">
+                           <children>
+                              <Circle fill="#1fff27" layoutX="29.0" layoutY="38.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                              <Label layoutX="59.0" layoutY="14.0" text="Server 1" textFill="WHITE">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="59.0" layoutY="36.0" text="192.168.139.943:8080" textFill="WHITE" />
+                              <Label layoutX="561.0" layoutY="28.0" text="7/10" textFill="WHITE" />
+                           </children>
+                        </Pane>
+						-->
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+            <Label layoutX="267.0" layoutY="14.0" text="Server Status">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+      </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+    </AnchorPane>
+  </children>
+</VBox>
