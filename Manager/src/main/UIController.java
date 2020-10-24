@@ -27,8 +27,10 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -37,28 +39,24 @@ import javafx.scene.shape.Circle;
 
 public class UIController {
 	//Variables
-	public ArrayList<Server> servers;
 	private Timer timer;
-	private CloseableHttpClient httpClient;
+	private Main _main;
+	
+	public void setMain(Main main) {
+		this._main = main;
+	}
 	
 	//FXML Properties
 	@FXML
 	private VBox serversBox;
+	@FXML
+	private Label matchmakingLabel;
+	@FXML
+	private Label serversLabel;
 	
 	@FXML
-	public void initialize() {
-		this.httpClient = HttpClients.createDefault();	
-		
-		//Creates servers between the ports Main.min_port and Main.max_port, not exceeding Main.max_servers
-		this.servers = new ArrayList<Server>();
-		for(int i = Main.min_port; i <= Main.max_port && (i-Main.min_port) < Main.max_servers; i++) {
-			Server temp = new Server("Server " + i, "localhost", i);
-			servers.add(temp);
-		}
-	}
-	
-	public void quit() {
-		//Main.primaryStage.close();
+	public void initialize() {	
+		Main._Matchmaking.start();
 	}
 	
 	//Methods
@@ -105,35 +103,31 @@ public class UIController {
 	}
 	
 	@FXML
-	public void refreshServers() {
+	private void refreshServers() {
 		this.serversBox.getChildren().clear();
-		for(Server s : this.servers) {
+		for(Server s : Matchmaking.servers) {
 			addServer(s);
 		}
 	}
 	
-	public void refreshUI() {
-		this.refreshServers();
+	@FXML
+	private void refreshHeader() {
+		if(_main._Matchmaking.online) {
+			matchmakingLabel.setTextFill(Color.LIMEGREEN);
+			matchmakingLabel.setText("Online");
+		}else {
+			matchmakingLabel.setTextFill(Color.RED);
+			matchmakingLabel.setText("Offline");
+		}
+		serversLabel.setText(String.valueOf(_main._Matchmaking.servers.size()) + "/" + String.valueOf(_main.max_servers));
 	}
 	
-	//Networking
+	public void refreshUI() {
+		this.refreshServers();
+		this.refreshHeader();
+	}
 	
-	//https://www.vogella.com/tutorials/ApacheHttpClient/article.html
-	//http://hc.apache.org/httpcomponents-client-ga/quickstart.html
-	public String getRequest(String address) {
-		HttpGet request = new HttpGet("http://localhost/radiant-site/public/");
-		CloseableHttpResponse response;
-		String all = "";
-		try {
-			response = this.httpClient.execute(request);
-			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-			String line = "";
-			while((line = rd.readLine()) != null) {
-				all += line;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return all;
+	public void ErrorAlert(String title, String description) {
+		this._main.ErrorAlert(title, description);
 	}
 }

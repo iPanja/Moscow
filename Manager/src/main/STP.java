@@ -14,37 +14,43 @@ public class STP extends Thread{
 	private Process process;
 	private String error;
 	
+	private Server _server;
 	
-	
-	public STP(String name, String ip, int port) {
+	public STP(String name, String ip, int port, Server server) {
 		this.name = name;
 		this.ip = ip;
 		this.port = port;
-		this.status = ServerStatus.Offline;
+		this.status = ServerStatus.Running;
+		this._server = server;
 	}
 	
 	public void run() {
 		//Everything in here is run asynchronously
 		this.launch();
 		
-		//Tell API this server is up and running
-		
-		//Every 5 seconds check API for players
-		while(this.status != ServerStatus.Offline) {
-			//Code
-			System.out.println("[Server] " + this.name + " pinging...");
-			//Wait 5 seconds
+		//Every 5 seconds check for error/closure
+		while(this.isAlive()) {
 			try {
+				if(getError().length() != 0) {
+					this.status = ServerStatus.Error;
+				}
 				Thread.sleep(5000);
 			}catch(InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+		
+		//Game is over/process closed
+		this.status = ServerStatus.Finished;
+		Matchmaking.onGameOver(this._server);
 	}
 	
 	public void launch() {
-		if(this.status != ServerStatus.Offline) return;
+		if(this.status == ServerStatus.Running) return;
 		System.out.println("[Opening] " + this.name + " on " + this.ip + ":" + this.port);
+		
+		if(Main.offlineMode) return; //--DEV
+		
 		Runtime runtime = Runtime.getRuntime();
 		try { //Attempt to start server executable with specified port
 			ProcessBuilder pb = new ProcessBuilder(Main.SELoc + Main.SEName, "name", "port");
@@ -52,16 +58,16 @@ public class STP extends Thread{
 			this.process = pb.start();
 		}catch(Exception e) {
 			System.out.println("Failed to start server: " + this.name + " on " + this.ip + ":" + this.port);
-			this.status = ServerStatus.Offline;
+			this.status = ServerStatus.Error;
 			e.printStackTrace();
 			return;
 		}
 		this.error = this.getErrorStream();
 		if(this.error != null) { //Error
-			this.status = ServerStatus.Offline;
+			this.status = ServerStatus.Error;
 		}
-		this.status = ServerStatus.Running;
-		//Check if port is open, then set status to Online
+		
+		this.status = ServerStatus.Matchmaking;
 	}
 	public ServerStatus getServerStatus() {
 		return this.status;
@@ -72,7 +78,7 @@ public class STP extends Thread{
 	}
 	public void close() { //Forcibly close process
 		System.out.println("[Closing] " + this.name + " on " + this.ip + ":" + this.port);
-		this.status = ServerStatus.Offline;
+		this.status = ServerStatus.Finished;
 		this.process.destroyForcibly();
 	}
 	

@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -21,7 +23,11 @@ public class Main extends Application{
 	public static String SELoc = "E:\\Fletcher\\Downloads\\winserver";
 	public static String SEName = "\\fnafmoba.exe";
 	
+	public static Boolean offlineMode = false; //-DEV
+	public static int authkeySize = 32; //-DEV
+	
 	public static UIController _UIController = new UIController();
+	public static Matchmaking _Matchmaking = new Matchmaking();
 	
 	
 	public static void main(String[] args) {
@@ -31,6 +37,7 @@ public class Main extends Application{
 	@Override
 	@FXML
 	public void start(Stage primaryStage) {
+		_UIController.setMain(this);
 		primaryStage.setTitle("Moscow Server Manager");
 		
 		try {
@@ -66,8 +73,20 @@ public class Main extends Application{
 	
 	@Override
 	public void stop() {
-		for(Server s : Main._UIController.servers){
+		for(Server s : _Matchmaking.servers){
 			s.close();
 		}
+	}
+	public void ErrorAlert(String title, String description) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Alert a = new Alert(AlertType.ERROR);
+				a.setHeaderText(title);
+				a.setContentText(description);
+				a.show();
+			}
+		});
+		
 	}
 }
